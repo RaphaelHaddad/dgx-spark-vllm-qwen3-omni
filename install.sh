@@ -227,10 +227,10 @@ install_triton() {
 
     log_info "Installing Triton build dependencies..."
     source "$INSTALL_DIR/.vllm/bin/activate"
-    uv pip install cmake ninja pybind11
+    uv pip install pip cmake ninja pybind11
 
     log_info "Building Triton (this takes ~5 minutes)..."
-    # Use python -m pip instead of uv for Triton to avoid build issues
+    # Use python -m pip for better build error handling with Triton
     export TRITON_PTXAS_PATH=/usr/local/cuda/bin/ptxas
     export CMAKE_BUILD_PARALLEL_LEVEL=$(nproc)
     python -m pip install --no-build-isolation -v . 2>&1 | tee "$INSTALL_DIR/triton-build.log"
