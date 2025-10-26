@@ -1,0 +1,77 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environments
+.venv
+.vllm/
+venv/
+ENV/
+env/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+vllm-server.log
+*.out
+*.err
+
+# Build artifacts
+*.o
+*.a
+*.so
+*.dylib
+*.dll
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+
+# CUDA
+*.ptx
+*.cubin
+
+# Local installation directories
+triton/
+vllm/
+.cache/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+
+# Model downloads
+models/
+*.safetensors
+*.bin
+*.gguf

@@ -1,0 +1,25 @@
+# Core Dependencies for vLLM on DGX Spark (Blackwell GB10)
+# Install with: uv pip install -r requirements.txt
+
+# PyTorch with CUDA 13.0 support
+--index-url https://download.pytorch.org/whl/cu130
+torch==2.9.0+cu130
+torchvision==0.24.0
+torchaudio==2.9.0
+
+# Triton (must be built from source - see install.sh)
+# triton @ git+https://github.com/triton-lang/triton.git@main
+
+# vLLM dependencies
+xgrammar>=0.1.26
+setuptools-scm>=9.2.2
+apache-tvm-ffi==0.1.0b15  # Pre-release required
+
+# Build dependencies
+pybind11>=3.0.0
+ninja>=1.13.0
+
+# Optional but recommended
+flashinfer-python>=0.4.1
+transformers>=4.57.0
+huggingface-hub>=0.36.0
