@@ -227,10 +227,24 @@ install_triton() {
 
     log_info "Installing Triton build dependencies..."
     source "$INSTALL_DIR/.vllm/bin/activate"
-    uv pip install pybind11
+    uv pip install cmake ninja pybind11
 
     log_info "Building Triton (this takes ~5 minutes)..."
-    TRITON_PTXAS_PATH=/usr/local/cuda/bin/ptxas uv pip install --no-build-isolation .
+    # Use python -m pip instead of uv for Triton to avoid build issues
+    export TRITON_PTXAS_PATH=/usr/local/cuda/bin/ptxas
+    export CMAKE_BUILD_PARALLEL_LEVEL=$(nproc)
+    python -m pip install --no-build-isolation -v . 2>&1 | tee "$INSTALL_DIR/triton-build.log"
+
+    if [ ${PIPESTATUS[0]} -ne 0 ]; then
+        log_error "Triton build failed. See $INSTALL_DIR/triton-build.log for details"
+        log_info "Attempting alternative installation method..."
+        python setup.py install 2>&1 | tee "$INSTALL_DIR/triton-build-alt.log"
+        if [ $? -ne 0 ]; then
+            log_error "Triton installation failed. This is a known issue with Triton builds."
+            log_error "Please see TROUBLESHOOTING.md for manual Triton installation instructions."
+            exit 1
+        fi
+    fi
 
     # Verify Triton installation
     log_info "Verifying Triton installation..."
@@ -347,20 +361,21 @@ create_helper_scripts() {
 
     # Create environment activation script
     log_info "Creating vllm_env.sh..."
-    cat > "$INSTALL_DIR/vllm_env.sh" << 'EOF'
+    cat > "$INSTALL_DIR/vllm_env.sh" << EOF
 #!/bin/bash
 # vLLM Environment Configuration for DGX Spark
-source ~/development/dgx/.vllm/bin/activate
+SCRIPT_DIR="\$(cd "\$(dirname "\${BASH_SOURCE[0]}")" && pwd)"
+source "\$SCRIPT_DIR/.vllm/bin/activate"
 export TORCH_CUDA_ARCH_LIST=12.1a
 export VLLM_USE_FLASHINFER_MXFP4_MOE=1
-CUDA_PATH=$(ls -d /usr/local/cuda* 2>/dev/null | head -1)
-export TRITON_PTXAS_PATH="$CUDA_PATH/bin/ptxas"
-export PATH="$CUDA_PATH/bin:$PATH"
-export LD_LIBRARY_PATH="$CUDA_PATH/lib64:$LD_LIBRARY_PATH"
+CUDA_PATH=\$(ls -d /usr/local/cuda* 2>/dev/null | head -1)
+export TRITON_PTXAS_PATH="\$CUDA_PATH/bin/ptxas"
+export PATH="\$CUDA_PATH/bin:\$PATH"
+export LD_LIBRARY_PATH="\$CUDA_PATH/lib64:\$LD_LIBRARY_PATH"
 echo "=== vLLM Environment Active ==="
-echo "Virtual env: $VIRTUAL_ENV"
-echo "CUDA arch: $TORCH_CUDA_ARCH_LIST"
-echo "Python: $(which python)"
+echo "Virtual env: \$VIRTUAL_ENV"
+echo "CUDA arch: \$TORCH_CUDA_ARCH_LIST"
+echo "Python: \$(which python)"
 echo "==============================="
 EOF
     chmod +x "$INSTALL_DIR/vllm_env.sh"
