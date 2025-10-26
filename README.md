@@ -2,7 +2,7 @@
 
 **One-command installation** of vLLM for NVIDIA DGX Spark systems with GB10 GPUs (Blackwell architecture, sm_121).
 
-This repository provides a battle-tested, production-ready setup script that handles all the complexities of building vLLM on the DGX Spark platform, including:
+This repository provides a dgx-spark tested, ready setup script that handles all the complexities of building vLLM on the DGX Spark platform, including:
 - CUDA 13.0 support with Blackwell-specific optimizations
 - Critical fixes for SM100/SM120 MOE kernel compilation
 - Triton 3.5.0 from main branch (required for sm_121a support)
