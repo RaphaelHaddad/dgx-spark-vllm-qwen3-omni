@@ -36,15 +36,15 @@ Run the installer on each node:
 
 ```bash
 # On spark-alpha (master)
-curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/dgx-spark-vllm-setup/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/eelbaz/dgx-spark-vllm-setup/main/install.sh | bash
 
 # On spark-omega (worker 1)
 ssh spark-omega.local
-curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/dgx-spark-vllm-setup/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/eelbaz/dgx-spark-vllm-setup/main/install.sh | bash
 
 # On spark-gamma (worker 2)
 ssh spark-gamma.local
-curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/dgx-spark-vllm-setup/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/eelbaz/dgx-spark-vllm-setup/main/install.sh | bash
 ```
 
 ## Step 2: Configure Network Settings

@@ -12,13 +12,13 @@ This repository provides a battle-tested, production-ready setup script that han
 ## Quick Start
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/YOUR_USERNAME/dgx-spark-vllm-setup/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/eelbaz/dgx-spark-vllm-setup/main/install.sh | bash
 ```
 
 Or clone and run manually:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/dgx-spark-vllm-setup.git
+git clone https://github.com/eelbaz/dgx-spark-vllm-setup.git
 cd dgx-spark-vllm-setup
 ./install.sh
 ```
