@@ -11,19 +11,56 @@ This repository provides a battle-tested, production-ready setup script that han
 
 ## Quick Start
 
+### Option 1: Default Installation (recommended)
+
+Installs to `~/development/dgx/`:
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/eelbaz/dgx-spark-vllm-setup/main/install.sh | bash
 ```
 
-Or clone and run manually:
+### Option 2: Custom Installation Directory
+
+Install to a specific directory by downloading first:
+
+```bash
+# Download the installer
+curl -fsSL https://raw.githubusercontent.com/eelbaz/dgx-spark-vllm-setup/main/install.sh -o install.sh
+chmod +x install.sh
+
+# Install to custom location
+./install.sh --install-dir ~/my/custom/path
+```
+
+Or use the one-liner with arguments:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/eelbaz/dgx-spark-vllm-setup/main/install.sh | bash -s -- --install-dir ~/my/custom/path
+```
+
+### Option 3: Clone Repository
 
 ```bash
 git clone https://github.com/eelbaz/dgx-spark-vllm-setup.git
 cd dgx-spark-vllm-setup
-./install.sh
+./install.sh                           # Default location
+./install.sh --install-dir ~/custom    # Custom location
 ```
 
 **Installation time:** ~20-30 minutes (mostly compilation)
+
+### Installation Options
+
+```bash
+./install.sh [OPTIONS]
+
+Options:
+  --install-dir DIR    Installation directory (default: ~/development/dgx)
+  --vllm-version TAG   vLLM git tag/branch (default: v0.11.1rc3)
+  --python-version VER Python version (default: 3.12)
+  --skip-tests         Skip post-installation tests
+  --help               Show help message
+```
 
 ## System Requirements
 
@@ -35,14 +72,18 @@ cd dgx-spark-vllm-setup
 
 ## What Gets Installed
 
-- **Python 3.12** virtual environment at `~/development/dgx/.vllm`
+By default (to `~/development/dgx/`):
+
+- **Python 3.12** virtual environment at `<install-dir>/.vllm`
 - **PyTorch 2.9.0+cu130** with full CUDA 13.0 support
 - **Triton 3.5.0+git** from main branch (pre-release with Blackwell support)
 - **vLLM 0.11.1rc3+** with all Blackwell-specific patches
 - **Helper scripts** for managing vLLM server
-- **Environment activation** script
+- **Environment activation** script (`vllm_env.sh`)
 
 ## Usage
+
+**Note:** Replace `~/development/dgx` with your installation directory if you used `--install-dir`.
 
 ### Activate Environment
 
@@ -61,12 +102,14 @@ cd ~/development/dgx
 ### Check Server Status
 
 ```bash
+cd ~/development/dgx
 ./vllm-status.sh
 ```
 
 ### Stop Server
 
 ```bash
+cd ~/development/dgx
 ./vllm-stop.sh
 ```
 
