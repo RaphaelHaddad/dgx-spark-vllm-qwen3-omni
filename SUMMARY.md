@@ -154,11 +154,11 @@ git clone https://github.com/eelbaz/dgx-spark-vllm-setup.git
 cd dgx-spark-vllm-setup
 ./install.sh
 
-# Activate environment
-source ~/development/dgx/vllm_env.sh
+# Activate environment (assuming installation in current directory)
+cd vllm-install
+source vllm_env.sh
 
 # Start server
-cd ~/development/dgx
 ./vllm-serve.sh
 
 # Test API

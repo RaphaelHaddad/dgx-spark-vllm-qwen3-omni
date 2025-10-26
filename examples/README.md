@@ -7,7 +7,8 @@ This directory contains example scripts demonstrating various ways to use vLLM o
 Ensure vLLM is installed and the environment is activated:
 
 ```bash
-source ~/development/dgx/vllm_env.sh
+# Assuming vllm-install is in your home directory
+source ~/vllm-install/vllm_env.sh
 ```
 
 ## Examples
@@ -34,7 +35,7 @@ Using vLLM's OpenAI-compatible REST API.
 **Prerequisites:**
 Start the vLLM server first:
 ```bash
-cd ~/development/dgx
+cd ~/vllm-install
 ./vllm-serve.sh
 ```
 
@@ -212,7 +213,7 @@ nvidia-smi  # Check GPU utilization
 Ensure server is running:
 
 ```bash
-cd ~/development/dgx
+cd ~/vllm-install
 ./vllm-status.sh
 ```
 

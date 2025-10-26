@@ -204,14 +204,14 @@ This is a known Triton editable-mode build issue. The installer works around thi
 
 **Solution:**
 ```bash
-source ~/development/dgx/vllm_env.sh
+source vllm-install/vllm_env.sh
 python -c "import vllm; print(vllm.__version__)"
 ```
 
 ## File Structure
 
 ```
-~/development/dgx/
+vllm-install/
 ├── .vllm/                  # Python virtual environment
 ├── vllm/                   # vLLM source (editable install)
 ├── triton/                 # Triton source
@@ -231,8 +231,8 @@ If you prefer to understand each step:
 curl -LsSf https://astral.sh/uv/install.sh | sh
 export PATH="$HOME/.local/bin:$PATH"
 
-# 2. Create Python 3.12 virtual environment
-cd ~/development/dgx
+# 2. Create installation directory and Python virtual environment
+mkdir -p vllm-install && cd vllm-install
 uv venv .vllm --python 3.12
 source .vllm/bin/activate
 
@@ -242,14 +242,14 @@ uv pip install torch torchvision torchaudio --index-url https://download.pytorch
 # 4. Clone and build Triton from main
 git clone https://github.com/triton-lang/triton.git
 cd triton
-uv pip install pybind11
-TRITON_PTXAS_PATH=/usr/local/cuda/bin/ptxas uv pip install --no-build-isolation .
+uv pip install pip cmake ninja pybind11
+TRITON_PTXAS_PATH=/usr/local/cuda/bin/ptxas python -m pip install --no-build-isolation .
 
 # 5. Install additional dependencies
 uv pip install xgrammar setuptools-scm apache-tvm-ffi==0.1.0b15 --prerelease=allow
 
 # 6. Clone vLLM
-cd ~/development/dgx
+cd ..
 git clone --recursive https://github.com/vllm-project/vllm.git
 cd vllm
 git checkout v0.11.1rc3

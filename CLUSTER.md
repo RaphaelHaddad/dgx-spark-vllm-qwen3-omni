@@ -85,7 +85,8 @@ ssh spark-gamma.local "echo 'Connection successful'"
 ### On Master Node (spark-alpha)
 
 ```bash
-source ~/development/dgx/vllm_env.sh
+# Assuming vllm-install is in your home directory
+source ~/vllm-install/vllm_env.sh
 
 # Start Ray head node
 ray start --head \
@@ -100,7 +101,7 @@ ray start --head \
 ### On Worker Nodes (spark-omega, spark-gamma)
 
 ```bash
-source ~/development/dgx/vllm_env.sh
+source ~/vllm-install/vllm_env.sh
 
 # Replace MASTER_IP with spark-alpha's IP address
 ray start --address='MASTER_IP:6379' --num-gpus=1
@@ -122,7 +123,7 @@ Tensor parallelism splits model layers across multiple GPUs.
 
 ```bash
 # On master node
-source ~/development/dgx/vllm_env.sh
+source ~/vllm-install/vllm_env.sh
 
 vllm serve \
   --model "meta-llama/Llama-3.1-70B-Instruct" \
@@ -194,7 +195,7 @@ Shows:
 
 ```bash
 # On master node
-tail -f ~/development/dgx/vllm-server.log
+tail -f ~/vllm-install/vllm-server.log
 
 # Check GPU usage across cluster
 ray exec 'nvidia-smi'
@@ -278,13 +279,13 @@ Share model weights via NFS to avoid redundant downloads:
 ```bash
 # On NFS server (e.g., master)
 sudo apt install nfs-kernel-server
-echo "/home/exobit/.cache/huggingface *(rw,sync,no_subtree_check)" | sudo tee -a /etc/exports
+echo "$HOME/.cache/huggingface *(rw,sync,no_subtree_check)" | sudo tee -a /etc/exports
 sudo exportfs -a
 
 # On workers
 sudo apt install nfs-common
-sudo mkdir -p /home/exobit/.cache/huggingface
-sudo mount spark-alpha.local:/home/exobit/.cache/huggingface /home/exobit/.cache/huggingface
+sudo mkdir -p $HOME/.cache/huggingface
+sudo mount spark-alpha.local:$HOME/.cache/huggingface $HOME/.cache/huggingface
 ```
 
 ### Load Balancing with nginx
@@ -318,13 +319,13 @@ Create `start-cluster.sh`:
 #!/bin/bash
 # Start Ray cluster on all nodes
 
-ssh spark-alpha.local "source ~/development/dgx/vllm_env.sh && ray start --head --port=6379"
+ssh spark-alpha.local "source ~/vllm-install/vllm_env.sh && ray start --head --port=6379"
 sleep 5
 
 MASTER_IP=$(ssh spark-alpha.local "hostname -I | awk '{print \$1}'")
 
-ssh spark-omega.local "source ~/development/dgx/vllm_env.sh && ray start --address='${MASTER_IP}:6379'"
-ssh spark-gamma.local "source ~/development/dgx/vllm_env.sh && ray start --address='${MASTER_IP}:6379'"
+ssh spark-omega.local "source ~/vllm-install/vllm_env.sh && ray start --address='${MASTER_IP}:6379'"
+ssh spark-gamma.local "source ~/vllm-install/vllm_env.sh && ray start --address='${MASTER_IP}:6379'"
 
 echo "Cluster started. Check status with: ray status"
 ```
