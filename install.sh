@@ -28,7 +28,7 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Default configuration
-INSTALL_DIR="$HOME/development/dgx"
+INSTALL_DIR="$PWD/vllm-install"
 VLLM_VERSION="v0.11.1rc3"
 PYTHON_VERSION="3.12"
 SKIP_TESTS=false

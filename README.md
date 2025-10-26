@@ -11,43 +11,27 @@ This repository provides a battle-tested, production-ready setup script that han
 
 ## Quick Start
 
-### Option 1: Default Installation (recommended)
-
-Installs to `~/development/dgx/`:
+**One-command installation** - installs to `./vllm-install` in your current directory:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/eelbaz/dgx-spark-vllm-setup/main/install.sh | bash
 ```
 
-### Option 2: Custom Installation Directory
-
-Install to a specific directory by downloading first:
-
-```bash
-# Download the installer
-curl -fsSL https://raw.githubusercontent.com/eelbaz/dgx-spark-vllm-setup/main/install.sh -o install.sh
-chmod +x install.sh
-
-# Install to custom location
-./install.sh --install-dir ~/my/custom/path
-```
-
-Or use the one-liner with arguments:
+Or specify a custom directory:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/eelbaz/dgx-spark-vllm-setup/main/install.sh | bash -s -- --install-dir ~/my/custom/path
 ```
 
-### Option 3: Clone Repository
+**Installation time:** ~20-30 minutes (mostly compilation)
+
+### Alternative: Clone and Install
 
 ```bash
 git clone https://github.com/eelbaz/dgx-spark-vllm-setup.git
 cd dgx-spark-vllm-setup
-./install.sh                           # Default location
-./install.sh --install-dir ~/custom    # Custom location
+./install.sh
 ```
-
-**Installation time:** ~20-30 minutes (mostly compilation)
 
 ### Installation Options
 
@@ -55,7 +39,7 @@ cd dgx-spark-vllm-setup
 ./install.sh [OPTIONS]
 
 Options:
-  --install-dir DIR    Installation directory (default: ~/development/dgx)
+  --install-dir DIR    Installation directory (default: ./vllm-install)
   --vllm-version TAG   vLLM git tag/branch (default: v0.11.1rc3)
   --python-version VER Python version (default: 3.12)
   --skip-tests         Skip post-installation tests
@@ -72,9 +56,9 @@ Options:
 
 ## What Gets Installed
 
-By default (to `~/development/dgx/`):
+Installed to `./vllm-install` (or your custom directory):
 
-- **Python 3.12** virtual environment at `<install-dir>/.vllm`
+- **Python 3.12** virtual environment at `.vllm/`
 - **PyTorch 2.9.0+cu130** with full CUDA 13.0 support
 - **Triton 3.5.0+git** from main branch (pre-release with Blackwell support)
 - **vLLM 0.11.1rc3+** with all Blackwell-specific patches
@@ -83,18 +67,18 @@ By default (to `~/development/dgx/`):
 
 ## Usage
 
-**Note:** Replace `~/development/dgx` with your installation directory if you used `--install-dir`.
+All examples assume you're in the installation directory (default: `./vllm-install`).
 
 ### Activate Environment
 
 ```bash
-source ~/development/dgx/vllm_env.sh
+cd vllm-install
+source vllm_env.sh
 ```
 
 ### Start vLLM Server
 
 ```bash
-cd ~/development/dgx
 ./vllm-serve.sh                                    # Default: Qwen2.5-0.5B on port 8000
 ./vllm-serve.sh "facebook/opt-125m" 8001          # Custom model and port
 ```
@@ -102,14 +86,12 @@ cd ~/development/dgx
 ### Check Server Status
 
 ```bash
-cd ~/development/dgx
 ./vllm-status.sh
 ```
 
 ### Stop Server
 
 ```bash
-cd ~/development/dgx
 ./vllm-stop.sh
 ```
 
