@@ -110,8 +110,14 @@ preflight_checks() {
 
     # Check CUDA
     if ! check_command nvcc; then
-        log_error "CUDA toolkit not found. Please install CUDA 13.0+"
-        exit 1
+        # Check common CUDA install locations
+        if [ -x "/usr/local/cuda/bin/nvcc" ]; then
+            export PATH="/usr/local/cuda/bin:$PATH"
+            log_info "Found CUDA at /usr/local/cuda, added to PATH"
+        else
+            log_error "CUDA toolkit not found. Please install CUDA 13.0+"
+            exit 1
+        fi
     fi
 
     CUDA_VERSION=$(nvcc --version | grep "release" | awk '{print $6}' | cut -d',' -f1)
