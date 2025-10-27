@@ -195,9 +195,10 @@ license = {text = "Apache-2.0"}
 The installer sets these critical environment variables:
 
 ```bash
-TORCH_CUDA_ARCH_LIST=12.1a              # Blackwell sm_121
-VLLM_USE_FLASHINFER_MXFP4_MOE=1        # Enable FlashInfer MOE optimization
-TRITON_PTXAS_PATH=/usr/local/cuda/bin/ptxas  # CUDA PTX assembler
+TORCH_CUDA_ARCH_LIST=12.1a                      # Blackwell sm_121
+VLLM_USE_FLASHINFER_MXFP4_MOE=1                 # Enable FlashInfer MOE optimization
+TRITON_PTXAS_PATH=/usr/local/cuda/bin/ptxas     # CUDA PTX assembler
+TIKTOKEN_CACHE_DIR=$INSTALL_DIR/.tiktoken_cache # Cache tiktoken encodings locally
 ```
 
 ## Cluster Mode Setup
