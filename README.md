@@ -149,7 +149,7 @@ cuda_archs_loose_intersection(SCALED_MM_ARCHS "10.0f;11.0f;12.0f" "${CUDA_ARCHS}
 ### 2. pyproject.toml License Field Format
 
 **Issue:** Newer setuptools requires structured license format
-**Fix:** Convert license string to dict format
+**Fix:** Convert license string to dict format in both vLLM and flashinfer-python
 
 ```toml
 # Before
@@ -159,6 +159,10 @@ license-files = ["LICENSE"]
 # After
 license = {text = "Apache-2.0"}
 ```
+
+**Applied to:**
+- vLLM's pyproject.toml
+- flashinfer-python's pyproject.toml (patched during build)
 
 ### 3. Triton Main Branch Requirement
 

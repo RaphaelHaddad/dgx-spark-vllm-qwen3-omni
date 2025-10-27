@@ -322,11 +322,40 @@ apply_fixes() {
         sed -i 's/cuda_archs_loose_intersection(SCALED_MM_ARCHS "10.0f;11.0f"/cuda_archs_loose_intersection(SCALED_MM_ARCHS "10.0f;11.0f;12.0f"/' CMakeLists.txt
     fi
 
+    # Fix 3: flashinfer-python license field (pre-emptive fix)
+    log_info "Pre-fixing flashinfer-python license issue..."
+    # Clear uv cache for flashinfer to ensure clean download
+    rm -rf "$HOME/.cache/uv/sdists-v9/pypi/flashinfer-python" 2>/dev/null || true
+
     # Configure use_existing_torch
     log_info "Configuring vLLM to use existing PyTorch..."
     python3 use_existing_torch.py
 
     log_success "All fixes applied successfully"
+}
+
+################################################################################
+# Fix flashinfer-python License Field
+################################################################################
+
+fix_flashinfer_license() {
+    log_info "Fixing flashinfer-python license field in uv cache..."
+
+    # Find flashinfer pyproject.toml in uv cache
+    FLASHINFER_DIRS=$(find "$HOME/.cache/uv/sdists-v9/pypi/flashinfer-python" -name "pyproject.toml" 2>/dev/null || true)
+
+    if [ -n "$FLASHINFER_DIRS" ]; then
+        for PYPROJECT in $FLASHINFER_DIRS; do
+            log_info "Patching $PYPROJECT"
+            sed -i 's/^license = "Apache-2.0"$/license = {text = "Apache-2.0"}/' "$PYPROJECT"
+            sed -i '/^license-files = /d' "$PYPROJECT"
+        done
+        log_success "flashinfer-python license field fixed"
+        return 0
+    else
+        log_warning "No flashinfer-python found in cache yet"
+        return 1
+    fi
 }
 
 ################################################################################
@@ -347,7 +376,29 @@ build_vllm() {
     log_info "Starting vLLM build..."
     log_warning "This will take 15-20 minutes. Go grab a coffee!"
 
-    uv pip install --no-build-isolation --prerelease=allow -e .
+    # Try to build vLLM
+    set +e  # Don't exit on error, we'll handle it
+    uv pip install --no-build-isolation --prerelease=allow -e . 2>&1 | tee "$INSTALL_DIR/vllm-build.log"
+    BUILD_STATUS=${PIPESTATUS[0]}
+    set -e
+
+    # Check if build failed due to flashinfer license issue
+    if [ $BUILD_STATUS -ne 0 ]; then
+        if grep -q "flashinfer.*license.*must be valid" "$INSTALL_DIR/vllm-build.log"; then
+            log_warning "Build failed due to flashinfer-python license issue"
+            log_info "Applying flashinfer-python fix and retrying..."
+
+            # Fix flashinfer in cache
+            fix_flashinfer_license
+
+            # Retry build
+            log_info "Retrying vLLM build..."
+            uv pip install --no-build-isolation --prerelease=allow -e .
+        else
+            log_error "vLLM build failed. See $INSTALL_DIR/vllm-build.log for details"
+            exit 1
+        fi
+    fi
 
     log_success "vLLM built successfully!"
 }
