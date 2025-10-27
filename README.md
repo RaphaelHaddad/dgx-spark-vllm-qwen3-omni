@@ -170,7 +170,22 @@ license = {text = "Apache-2.0"}
 - vLLM's pyproject.toml
 - flashinfer-python's pyproject.toml (patched during build)
 
-### 3. Triton Main Branch Requirement
+### 3. GPT-OSS Triton MOE Kernels for Qwen3/gpt-oss Support
+
+**Issue:** vLLM's GPT-OSS MOE kernel implementation uses deprecated Triton routing API
+**Fix:** Update to new Triton kernel API (topk and SparseMatrix)
+
+**Changes:**
+- Replace deprecated `routing()` with `triton_topk()`
+- Replace deprecated `routing_from_bitmatrix()` with `SparseMatrix()`
+- Add support for `GatherIndx`, `ScatterIndx`, and new ragged tensor metadata
+
+**Enables support for:**
+- Qwen3 models with MOE architecture
+- gpt-oss models using Triton kernels
+- Latest Triton kernel optimizations for Blackwell
+
+### 4. Triton Main Branch Requirement
 
 **Issue:** Official Triton 3.5.0 release has bugs with sm_121a
 **Fix:** Build Triton from main branch with latest Blackwell fixes

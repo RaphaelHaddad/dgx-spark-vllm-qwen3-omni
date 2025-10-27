@@ -330,6 +330,19 @@ apply_fixes() {
     # Clear uv cache for flashinfer to ensure clean download
     rm -rf "$HOME/.cache/uv/sdists-v9/pypi/flashinfer-python" 2>/dev/null || true
 
+    # Fix 4: GPT-OSS Triton MOE kernels for Qwen3/gpt-oss support
+    if [ -f "$SCRIPT_DIR/patches/gpt_oss_triton_moe.patch" ]; then
+        log_info "Applying GPT-OSS Triton MOE kernel patch for Qwen3/gpt-oss support..."
+        if patch --dry-run -p1 < "$SCRIPT_DIR/patches/gpt_oss_triton_moe.patch" > /dev/null 2>&1; then
+            patch -p1 < "$SCRIPT_DIR/patches/gpt_oss_triton_moe.patch"
+            log_success "GPT-OSS Triton MOE kernel patch applied"
+        else
+            log_warning "GPT-OSS Triton MOE kernel patch already applied or conflicts"
+        fi
+    else
+        log_warning "GPT-OSS Triton MOE kernel patch not found (skipping)"
+    fi
+
     # Configure use_existing_torch
     log_info "Configuring vLLM to use existing PyTorch..."
     python3 use_existing_torch.py
