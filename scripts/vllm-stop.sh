@@ -1,7 +1,10 @@
 #!/bin/bash
 # vLLM Server Stop Script for DGX Spark
 
-PID_FILE="$HOME/development/dgx/.vllm-server.pid"
+# Determine installation directory (where this script is located)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+PID_FILE="$SCRIPT_DIR/.vllm-server.pid"
 
 if [ ! -f "$PID_FILE" ]; then
     echo "No vLLM server PID file found. Server may not be running."

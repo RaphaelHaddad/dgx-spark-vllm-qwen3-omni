@@ -4,13 +4,16 @@
 
 set -e
 
+# Determine installation directory (where this script is located)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 # Configuration
 MODEL="${1:-Qwen/Qwen2.5-0.5B-Instruct}"
 PORT="${2:-8000}"
-VLLM_DIR="$HOME/development/dgx/vllm"
-ENV_SCRIPT="$HOME/development/dgx/vllm_env.sh"
-PID_FILE="$HOME/development/dgx/.vllm-server.pid"
-LOG_FILE="$HOME/development/dgx/vllm-server.log"
+VLLM_DIR="$SCRIPT_DIR/vllm"
+ENV_SCRIPT="$SCRIPT_DIR/vllm_env.sh"
+PID_FILE="$SCRIPT_DIR/.vllm-server.pid"
+LOG_FILE="$SCRIPT_DIR/vllm-server.log"
 
 # Check if server is already running
 if [ -f "$PID_FILE" ]; then

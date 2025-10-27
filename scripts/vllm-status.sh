@@ -1,8 +1,11 @@
 #!/bin/bash
 # vLLM Server Status Script for DGX Spark
 
-PID_FILE="$HOME/development/dgx/.vllm-server.pid"
-LOG_FILE="$HOME/development/dgx/vllm-server.log"
+# Determine installation directory (where this script is located)
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+PID_FILE="$SCRIPT_DIR/.vllm-server.pid"
+LOG_FILE="$SCRIPT_DIR/vllm-server.log"
 
 echo "=" | tr '=' '-' | head -c 70 && echo
 echo "vLLM Server Status on DGX Spark"
