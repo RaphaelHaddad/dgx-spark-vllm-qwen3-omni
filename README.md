@@ -133,17 +133,23 @@ print(outputs[0].outputs[0].text)
 
 This installer automatically applies the following critical fixes:
 
-### 1. CMakeLists.txt SM100 MOE Kernel Fix
+### 1. CMakeLists.txt SM100/SM120 MOE Kernel Fix
 
-**Issue:** vLLM's MOE kernels for SM100 architecture were incomplete
-**Fix:** Added `12.0f` to SCALED_MM_ARCHS in CMakeLists.txt:671
+**Issue:** vLLM's MOE kernels for SM100/SM120 Blackwell architectures were incomplete
+**Fix:** Added `12.0f` and `12.1a` to SCALED_MM_ARCHS in CMakeLists.txt
 
 ```cmake
+# CUDA 13.0+ path (line ~671)
 # Before
 cuda_archs_loose_intersection(SCALED_MM_ARCHS "10.0f;11.0f" "${CUDA_ARCHS}")
-
 # After
 cuda_archs_loose_intersection(SCALED_MM_ARCHS "10.0f;11.0f;12.0f" "${CUDA_ARCHS}")
+
+# Older CUDA path (line ~673)
+# Before
+cuda_archs_loose_intersection(SCALED_MM_ARCHS "10.0a" "${CUDA_ARCHS}")
+# After
+cuda_archs_loose_intersection(SCALED_MM_ARCHS "10.0a;12.1a" "${CUDA_ARCHS}")
 ```
 
 ### 2. pyproject.toml License Field Format
