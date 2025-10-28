@@ -49,19 +49,19 @@ nohup python -m vllm.entrypoints.openai.api_server \
 
 # Save PID
 echo $! > "$PID_FILE"
-echo "✓ Server started with PID: $(cat $PID_FILE)"
-echo "✓ Waiting for server to be ready..."
+echo "OK: Server started with PID: $(cat $PID_FILE)"
+echo "OK: Waiting for server to be ready..."
 
 # Wait for server to be ready
 sleep 5
 if ps -p $(cat "$PID_FILE") > /dev/null 2>&1; then
-    echo "✓ Server is running!"
+    echo "OK: Server is running!"
     echo ""
     echo "Test with: curl http://localhost:$PORT/v1/models"
     echo "View logs: tail -f $LOG_FILE"
     echo "Stop server: ./vllm-stop.sh"
 else
-    echo "✗ Server failed to start. Check logs: $LOG_FILE"
+    echo "ERROR: Server failed to start. Check logs: $LOG_FILE"
     rm -f "$PID_FILE"
     exit 1
 fi

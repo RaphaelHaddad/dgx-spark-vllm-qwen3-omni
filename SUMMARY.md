@@ -202,11 +202,11 @@ dgx-spark-vllm-setup/
 
 ## Testing Status
 
-- ✅ Single-node installation on spark-alpha.local
-- ✅ Single-node installation on spark-omega.local  
-- ✅ vLLM server startup and API functionality
-- ✅ Model inference (Qwen/Qwen2.5-0.5B-Instruct)
-- 🔄 Multi-node cluster mode (documented, not yet tested)
+- [OK] Single-node installation on spark-alpha.local
+- [OK] Single-node installation on spark-omega.local
+- [OK] vLLM server startup and API functionality
+- [OK] Model inference (Qwen/Qwen2.5-0.5B-Instruct)
+- [IN PROGRESS] Multi-node cluster mode (documented, not yet tested)
 
 ## Future Enhancements
 

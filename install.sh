@@ -482,13 +482,13 @@ run_tests() {
     source "$INSTALL_DIR/vllm_env.sh"
 
     log_info "Test 1: Import vLLM..."
-    python -c "import vllm; print('✓ vLLM version:', vllm.__version__)"
+    python -c "import vllm; print('vLLM version:', vllm.__version__)"
 
     log_info "Test 2: Check CUDA availability..."
-    python -c "import torch; assert torch.cuda.is_available(), 'CUDA not available'; print('✓ CUDA available')"
+    python -c "import torch; assert torch.cuda.is_available(), 'CUDA not available'; print('CUDA available')"
 
     log_info "Test 3: Check GPU detection..."
-    python -c "import torch; print('✓ GPU count:', torch.cuda.device_count()); print('✓ GPU name:', torch.cuda.get_device_name(0))"
+    python -c "import torch; print('GPU count:', torch.cuda.device_count()); print('GPU name:', torch.cuda.get_device_name(0))"
 
     log_success "All tests passed!"
 }

@@ -63,11 +63,11 @@ This replaces **ALL** occurrences, fixing both lines 490 and 671 in one command.
 ## Verified Solution
 
 Tested on NVIDIA DGX Spark with Blackwell GB10, CUDA 13.0:
-- ✅ Line 490 fixed: `"10.0f;11.0f;12.0f"`
-- ✅ Line 671 fixed: `"10.0f;11.0f;12.0f"`
-- ✅ vLLM imports successfully
-- ✅ No cutlass_moe_mm_sm100 symbol errors
-- ✅ Build time: ~19 minutes
+- [OK] Line 490 fixed: `"10.0f;11.0f;12.0f"`
+- [OK] Line 671 fixed: `"10.0f;11.0f;12.0f"`
+- [OK] vLLM imports successfully
+- [OK] No cutlass_moe_mm_sm100 symbol errors
+- [OK] Build time: ~19 minutes
 
 ## Fix 2: vLLM Commit Version
 
@@ -131,4 +131,4 @@ llm = LLM(model='Qwen/Qwen2.5-0.5B-Instruct', max_model_len=512); \
 print(llm.generate(['Hello'], SamplingParams(max_tokens=20)))"
 ```
 
-✅ **All tests pass**: Import, compilation, CUDA graphs, and text generation all work correctly.
+**All tests pass**: Import, compilation, CUDA graphs, and text generation all work correctly.

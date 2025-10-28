@@ -25,7 +25,7 @@ if ! ps -p $PID > /dev/null 2>&1; then
     exit 0
 fi
 
-echo "Status: RUNNING ✓"
+echo "Status: RUNNING"
 echo "PID: $PID"
 echo "Started: $(ps -p $PID -o lstart= 2>/dev/null || echo 'Unknown')"
 echo "CPU: $(ps -p $PID -o %cpu= 2>/dev/null || echo 'N/A')%"

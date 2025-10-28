@@ -25,7 +25,7 @@ kill $PID
 # Wait for process to terminate
 for i in {1..10}; do
     if ! ps -p $PID > /dev/null 2>&1; then
-        echo "✓ Server stopped successfully"
+        echo "OK: Server stopped successfully"
         rm -f "$PID_FILE"
         exit 0
     fi
@@ -38,10 +38,10 @@ if ps -p $PID > /dev/null 2>&1; then
     kill -9 $PID
     sleep 1
     if ! ps -p $PID > /dev/null 2>&1; then
-        echo "✓ Server force stopped"
+        echo "OK: Server force stopped"
         rm -f "$PID_FILE"
     else
-        echo "✗ Failed to stop server"
+        echo "ERROR: Failed to stop server"
         exit 1
     fi
 fi
