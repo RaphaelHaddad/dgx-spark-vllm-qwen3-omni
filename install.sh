@@ -10,8 +10,8 @@
 #
 # Usage: ./install.sh [OPTIONS]
 # Options:
-#   --install-dir DIR    Installation directory (default: ~/development/dgx)
-#   --vllm-version TAG   vLLM git tag/branch (default: v0.11.1rc3)
+#   --install-dir DIR    Installation directory (default: $PWD/vllm-install)
+#   --vllm-version HASH  vLLM git commit (default: 66a168a19 - tested with Blackwell)
 #   --python-version VER Python version (default: 3.12)
 #   --skip-tests         Skip post-installation tests
 #   --help               Show this help message
@@ -29,7 +29,8 @@ NC='\033[0m' # No Color
 
 # Default configuration
 INSTALL_DIR="$PWD/vllm-install"
-VLLM_VERSION="v0.11.1rc3"
+VLLM_VERSION="66a168a197ba214a5b70a74fa2e713c9eeb3251a"  # vLLM commit with Blackwell fixes
+TRITON_VERSION="4caa0328bf8df64896dd5f6fb9df41b0eb2e750a"  # Triton commit that works with Blackwell
 PYTHON_VERSION="3.12"
 SKIP_TESTS=false
 
@@ -217,13 +218,17 @@ install_triton() {
     if [ -d "$TRITON_DIR" ]; then
         log_info "Triton directory exists, updating..."
         cd "$TRITON_DIR"
-        git pull
+        git fetch
     else
         log_info "Cloning Triton repository..."
         cd "$INSTALL_DIR"
         git clone https://github.com/triton-lang/triton.git
         cd triton
     fi
+
+    log_info "Checking out Triton commit $TRITON_VERSION (tested with Blackwell)..."
+    git checkout "$TRITON_VERSION"
+    git submodule update --init --recursive
 
     log_info "Installing Triton build dependencies..."
     source "$INSTALL_DIR/.vllm/bin/activate"
