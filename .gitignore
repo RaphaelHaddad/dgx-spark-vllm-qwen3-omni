@@ -76,3 +76,14 @@ models/
 *.bin
 *.gguf
 .github/copilot-instructions.md
+
+# Server logs
+vllm-server-multimodal.log
+
+# Test files
+/tmp/
+test-audio.m4a
+test-image.jpg
+
+# Original README backup
+README.md.original
