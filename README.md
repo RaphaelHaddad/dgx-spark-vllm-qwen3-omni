@@ -1,5 +1,7 @@
 # vLLM Setup for NVIDIA DGX Spark - Qwen3-Omni Edition
 
+[![GitHub](https://img.shields.io/badge/github-ohoachuck%2Fdgx--spark--vllm--qwen3--omni-blue)](https://github.com/ohoachuck/dgx-spark-vllm-qwen3-omni)
+
 **Fork of [eelbaz/dgx-spark-vllm-setup](https://github.com/eelbaz/dgx-spark-vllm-setup)** with additional modifications to support **Qwen3-Omni-30B** with full **multimodal capabilities** (text, audio, image).
 
 ## What's Different from the Original
@@ -43,8 +45,8 @@ All core vLLM installation logic, Blackwell architecture fixes, and system setup
 The original installation script works as-is:
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/dgx-spark-vllm-setup.git
-cd dgx-spark-vllm-setup
+git clone https://github.com/ohoachuck/dgx-spark-vllm-qwen3-omni.git
+cd dgx-spark-vllm-qwen3-omni
 ./install.sh
 ```
 
@@ -219,7 +221,7 @@ This fork inherits all critical fixes from the original repository:
 ## File Structure
 
 ```
-dgx-spark-vllm-setup/
+dgx-spark-vllm-qwen3-omni/
 ├── install.sh                           # Original installation script
 ├── vllm-install/
 │   ├── vllm_env.sh                      # Environment activation
