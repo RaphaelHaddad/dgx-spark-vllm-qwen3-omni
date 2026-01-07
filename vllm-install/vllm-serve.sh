@@ -1,21 +1,59 @@
 #!/bin/bash
 # Script de démarrage du serveur vLLM Qwen3-Omni
 # Lance le serveur en background et affiche la progression du chargement
+# Usage: ./vllm-serve.sh [text|multimodal]
+#   text (défaut) : Lance le serveur texte uniquement
+#   multimodal    : Lance le serveur avec support audio/image
 
+MODE="${1:-text}"  # Par défaut: mode texte
 INSTALL_DIR="/home/oho/Projects/dgx-spark-vllm-setup/vllm-install"
-LOG_FILE="$INSTALL_DIR/vllm-server.log"
 TIMEOUT=420  # 7 minutes
+
+# Sélection du serveur et log selon le mode
+if [ "$MODE" = "multimodal" ]; then
+    SERVER_SCRIPT="server-qwen3-omni-multimodal.py"
+    LOG_FILE="$INSTALL_DIR/vllm-server-multimodal.log"
+    MODE_NAME="Multimodal (Audio + Image + Text)"
+else
+    SERVER_SCRIPT="server-qwen3-omni.py"
+    LOG_FILE="$INSTALL_DIR/vllm-server.log"
+    MODE_NAME="Text Only"
+fi
 
 cd "$INSTALL_DIR" || exit 1
 
 echo "🚀 Démarrage du serveur vLLM Qwen3-Omni-30B..."
 echo "📍 Répertoire: $INSTALL_DIR"
+echo "🎯 Mode: $MODE_NAME"
 echo "📝 Log: $LOG_FILE"
+echo ""
+
+# CRITIQUE : Arrêter les anciens processus ET vérifier que le GPU est libre
+echo "🔍 Vérification des processus existants..."
+./vllm-stop.sh
+if [ $? -ne 0 ]; then
+    echo ""
+    echo "❌ ARRÊT : Le GPU n'est pas libéré. Tuez manuellement les zombies :"
+    echo "   nvidia-smi --query-compute-apps=pid,used_memory --format=csv"
+    echo "   kill -9 <PID>"
+    exit 1
+fi
+
+# Vérification finale GPU
+GPU_USAGE=$(nvidia-smi --query-compute-apps=pid --format=csv,noheader 2>/dev/null)
+if [ -n "$GPU_USAGE" ]; then
+    echo ""
+    echo "❌ ARRÊT : Le GPU est encore utilisé par : $GPU_USAGE"
+    echo "   Tuez ces processus avant de relancer"
+    exit 1
+fi
+
+echo "✅ GPU libéré, prêt à démarrer"
 echo ""
 
 # Charger l'environnement et lancer le serveur
 source vllm_env.sh
-nohup python server-qwen3-omni.py > "$LOG_FILE" 2>&1 &
+nohup python "$SERVER_SCRIPT" > "$LOG_FILE" 2>&1 &
 SERVER_PID=$!
 
 echo "🔧 Processus serveur lancé (PID: $SERVER_PID)"
