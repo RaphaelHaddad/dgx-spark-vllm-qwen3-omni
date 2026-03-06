@@ -7,7 +7,7 @@ import sys
 import os
 
 # Importer vLLM depuis le code source
-sys.path.insert(0, '/home/oho/Projects/dgx-spark-vllm-setup/vllm-install/vllm')
+sys.path.insert(0, '/home/hci-ai/Documents/vllm-mvp-omni-spark/dgx-spark-vllm-qwen3-omni/vllm-install/vllm')
 
 # CRUCIAL : Forcer FlashInfer
 os.environ['VLLM_ATTENTION_BACKEND'] = 'FLASHINFER'
@@ -25,7 +25,7 @@ from typing import Optional, List, Dict, Any
 app = FastAPI(title="vLLM OpenAI-Compatible API")
 
 # Configuration globale
-MODEL = "Qwen/Qwen3-Omni-30B-A3B-Instruct"
+MODEL = "/home/hci-ai/Documents/models/models/Qwen3-Omni-30B-A3B-Instruct/"
 llm = None
 
 @app.on_event("startup")
@@ -41,7 +41,7 @@ async def startup():
     llm = LLM(
         model=MODEL,
         trust_remote_code=True,
-        gpu_memory_utilization=0.9,
+        gpu_memory_utilization=0.85,
         max_model_len=8192,
         limit_mm_per_prompt={"image": 2, "audio": 1}
     )

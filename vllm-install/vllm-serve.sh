@@ -31,25 +31,6 @@ echo ""
 # CRITIQUE : Arrêter les anciens processus ET vérifier que le GPU est libre
 echo "🔍 Vérification des processus existants..."
 ./vllm-stop.sh
-if [ $? -ne 0 ]; then
-    echo ""
-    echo "❌ ARRÊT : Le GPU n'est pas libéré. Tuez manuellement les zombies :"
-    echo "   nvidia-smi --query-compute-apps=pid,used_memory --format=csv"
-    echo "   kill -9 <PID>"
-    exit 1
-fi
-
-# Vérification finale GPU
-GPU_USAGE=$(nvidia-smi --query-compute-apps=pid --format=csv,noheader 2>/dev/null)
-if [ -n "$GPU_USAGE" ]; then
-    echo ""
-    echo "❌ ARRÊT : Le GPU est encore utilisé par : $GPU_USAGE"
-    echo "   Tuez ces processus avant de relancer"
-    exit 1
-fi
-
-echo "✅ GPU libéré, prêt à démarrer"
-echo ""
 
 # Charger l'environnement et lancer le serveur
 source vllm_env.sh

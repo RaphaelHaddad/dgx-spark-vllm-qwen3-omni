@@ -38,9 +38,15 @@ GPU_USAGE=$(nvidia-smi --query-compute-apps=pid,used_memory --format=csv,noheade
 if [ -z "$GPU_USAGE" ]; then
     echo "✅ Aucun processus n'utilise le GPU"
 else
-    echo "⚠️  ATTENTION : Des processus utilisent encore le GPU :"
-    echo "$GPU_USAGE"
-    echo ""
-    echo "❌ ÉCHEC : Impossible de continuer tant que le GPU n'est pas libéré"
-    exit 1
+    # Ignore system/display processes using < 500 MiB (e.g. display manager, pid 176)
+    SIGNIFICANT=$(echo "$GPU_USAGE" | awk -F',' '{gsub(/ /, "", $2); if ($2+0 >= 500) print}' )
+    if [ -z "$SIGNIFICANT" ]; then
+        echo "✅ Seuls des processus système mineurs utilisent le GPU (< 500 MiB), on continue"
+    else
+        echo "⚠️  ATTENTION : Des processus significatifs utilisent encore le GPU :"
+        echo "$SIGNIFICANT"
+        echo ""
+        echo "❌ ÉCHEC : Impossible de continuer tant que le GPU n'est pas libéré"
+        exit 1
+    fi
 fi

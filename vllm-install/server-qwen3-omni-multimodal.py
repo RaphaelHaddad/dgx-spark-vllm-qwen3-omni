@@ -13,7 +13,7 @@ import io
 from typing import AsyncIterator
 
 # Ajouter vLLM au path
-sys.path.insert(0, '/home/oho/Projects/dgx-spark-vllm-setup/vllm-install/vllm')
+sys.path.insert(0, '/home/hci-ai/Documents/vllm-mvp-omni-spark/dgx-spark-vllm-qwen3-omni/vllm-install/vllm')
 
 # CRITIQUE: Forcer FlashInfer avant import vLLM
 os.environ['VLLM_ATTENTION_BACKEND'] = 'FLASHINFER'
@@ -33,7 +33,7 @@ import soundfile as sf
 from PIL import Image
 
 # Configuration
-MODEL = "Qwen/Qwen3-Omni-30B-A3B-Instruct"
+MODEL = "/home/hci-ai/Documents/models/models/Qwen3-Omni-30B-A3B-Instruct/"
 HOST = "0.0.0.0"
 PORT = 8000
 
