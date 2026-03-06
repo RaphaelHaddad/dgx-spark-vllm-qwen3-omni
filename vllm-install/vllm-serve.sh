@@ -21,10 +21,12 @@ if [ "$MODE" = "multimodal" ]; then
     SERVER_SCRIPT="server-qwen3-omni-multimodal.py"
     LOG_FILE="$INSTALL_DIR/vllm-server-multimodal.log"
     MODE_NAME="Multimodal (Audio + Image + Text)"
+    export VLLM_GPU_MEMORY_UTILIZATION="${VLLM_GPU_MEMORY_UTILIZATION:-0.85}"
 else
     SERVER_SCRIPT="server-qwen3-omni.py"
     LOG_FILE="$INSTALL_DIR/vllm-server.log"
     MODE_NAME="Text Only"
+    export VLLM_GPU_MEMORY_UTILIZATION="${VLLM_GPU_MEMORY_UTILIZATION:-0.85}"
 fi
 
 cd "$INSTALL_DIR" || exit 1
@@ -32,6 +34,7 @@ cd "$INSTALL_DIR" || exit 1
 echo "🚀 Démarrage du serveur vLLM Qwen3-Omni-30B..."
 echo "📍 Répertoire: $INSTALL_DIR"
 echo "🎯 Mode: $MODE_NAME"
+echo "🧠 GPU memory utilization: $VLLM_GPU_MEMORY_UTILIZATION"
 echo "📝 Log: $LOG_FILE"
 echo ""
 

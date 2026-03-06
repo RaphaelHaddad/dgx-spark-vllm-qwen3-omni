@@ -41,6 +41,8 @@ from PIL import Image
 MODEL = os.environ.get('VLLM_MODEL_PATH', '/home/hci-ai/Documents/models/models/Qwen3-Omni-30B-A3B-Instruct/')
 HOST = "0.0.0.0"
 PORT = 8000
+GPU_MEMORY_UTILIZATION = float(
+    os.environ.get('VLLM_GPU_MEMORY_UTILIZATION', '0.85'))
 
 # Templates pour le multimodal
 AUDIO_TOKEN = "<|audio_start|><|audio_pad|><|audio_end|>"
@@ -65,13 +67,14 @@ async def startup():
     print(f"📦 Modèle: {MODEL}")
     print(f"🎯 Backend: FlashInfer (forcé)")
     print(f"🔊 Support: Audio + Image + Text")
+    print(f"🧠 GPU memory utilization: {GPU_MEMORY_UTILIZATION:.2f}")
     
     # Charger le LLM avec support multimodal
     llm = LLM(
         model=MODEL,
         max_model_len=8192,
         max_num_seqs=5,
-        gpu_memory_utilization=0.90,  # Réduit à 90% pour laisser de la marge
+        gpu_memory_utilization=GPU_MEMORY_UTILIZATION,
         trust_remote_code=True,
         limit_mm_per_prompt={"audio": 10, "image": 10},  # Max 10 audios/images par prompt
         enforce_eager=False,
