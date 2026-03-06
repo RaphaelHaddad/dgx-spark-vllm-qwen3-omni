@@ -350,6 +350,74 @@ apply_fixes() {
         log_warning "GPT-OSS Triton MOE kernel patch not found (skipping)"
     fi
 
+    # Fix 6: transformers 5.x sets image_processor.min_pixels/.max_pixels to None
+    # on fast processors (Qwen2VLImageProcessorFast). The correct values are in
+    # image_processor.size["shortest_edge"] / ["longest_edge"].
+    QWEN2VL_FILE="vllm/model_executor/models/qwen2_vl.py"
+    if grep -q 'min_pixels=image_processor\.min_pixels' "$QWEN2VL_FILE"; then
+        log_info "Applying transformers 5.x image_processor.min/max_pixels fix..."
+        python3 - << 'PYEOF'
+import pathlib
+path = pathlib.Path("vllm/model_executor/models/qwen2_vl.py")
+old = (
+    "            resized_height, resized_width = smart_resize(\n"
+    "                height=image_height,\n"
+    "                width=image_width,\n"
+    "                factor=patch_size * merge_size,\n"
+    "                min_pixels=image_processor.min_pixels,\n"
+    "                max_pixels=image_processor.max_pixels,\n"
+    "            )"
+)
+new = (
+    "            # transformers 5.x sets .min_pixels/.max_pixels to None;\n"
+    "            # fall back to the size dict which always has the right values.\n"
+    "            _min_pixels = (image_processor.min_pixels\n"
+    "                           or image_processor.size.get(\"shortest_edge\"))\n"
+    "            _max_pixels = (image_processor.max_pixels\n"
+    "                           or image_processor.size.get(\"longest_edge\"))\n"
+    "            resized_height, resized_width = smart_resize(\n"
+    "                height=image_height,\n"
+    "                width=image_width,\n"
+    "                factor=patch_size * merge_size,\n"
+    "                min_pixels=_min_pixels,\n"
+    "                max_pixels=_max_pixels,\n"
+    "            )"
+)
+text = path.read_text()
+if old in text:
+    path.write_text(text.replace(old, new, 1))
+    print("Fix applied.")
+else:
+    print("Pattern not found — skipping.")
+PYEOF
+    else
+        log_info "transformers 5.x image_processor.min/max_pixels fix already applied"
+    fi
+
+    # Fix 5: transformers 5.x removed all_special_tokens_extended from slow tokenizers
+    # (e.g. Qwen2Tokenizer). Guard the access with getattr so vLLM falls back to
+    # all_special_tokens when the attribute is missing.
+    TOKENIZER_FILE="vllm/transformers_utils/tokenizer.py"
+    if grep -q "tokenizer\.all_special_tokens_extended" "$TOKENIZER_FILE"; then
+        log_info "Applying transformers 5.x all_special_tokens_extended compatibility fix..."
+        python3 - << 'PYEOF'
+import pathlib
+path = pathlib.Path("vllm/transformers_utils/tokenizer.py")
+old = "    tokenizer_all_special_tokens_extended = tokenizer.all_special_tokens_extended"
+new = ('    tokenizer_all_special_tokens_extended = getattr(\n'
+       '        tokenizer, "all_special_tokens_extended",\n'
+       '        tokenizer.all_special_tokens)')
+text = path.read_text()
+if old in text:
+    path.write_text(text.replace(old, new, 1))
+    print("Fix applied.")
+else:
+    print("Pattern not found — skipping.")
+PYEOF
+    else
+        log_info "transformers 5.x all_special_tokens_extended fix already applied"
+    fi
+
     # Configure use_existing_torch
     log_info "Configuring vLLM to use existing PyTorch..."
     python3 use_existing_torch.py

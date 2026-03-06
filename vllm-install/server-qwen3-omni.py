@@ -7,7 +7,12 @@ import sys
 import os
 
 # Importer vLLM depuis le code source
-sys.path.insert(0, '/home/hci-ai/Documents/vllm-mvp-omni-spark/dgx-spark-vllm-qwen3-omni/vllm-install/vllm')
+# Paths are configured via environment variables set in vllm-serve.sh
+_INSTALL_DIR = os.environ.get(
+    'VLLM_INSTALL_DIR',
+    os.path.dirname(os.path.abspath(__file__))
+)
+sys.path.insert(0, os.path.join(_INSTALL_DIR, 'vllm'))
 
 # CRUCIAL : Forcer FlashInfer
 os.environ['VLLM_ATTENTION_BACKEND'] = 'FLASHINFER'
@@ -24,8 +29,8 @@ from typing import Optional, List, Dict, Any
 
 app = FastAPI(title="vLLM OpenAI-Compatible API")
 
-# Configuration globale
-MODEL = "/home/hci-ai/Documents/models/models/Qwen3-Omni-30B-A3B-Instruct/"
+# Configuration globale — path injected via VLLM_MODEL_PATH env var set in vllm-serve.sh
+MODEL = os.environ.get('VLLM_MODEL_PATH', '/home/hci-ai/Documents/models/models/Qwen3-Omni-30B-A3B-Instruct/')
 llm = None
 
 @app.on_event("startup")

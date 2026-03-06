@@ -6,8 +6,15 @@
 #   multimodal    : Lance le serveur avec support audio/image
 
 MODE="${1:-text}"  # Par défaut: mode texte
-INSTALL_DIR="/home/oho/Projects/dgx-spark-vllm-setup/vllm-install"
-TIMEOUT=420  # 7 minutes
+INSTALL_DIR="/home/hci-ai/Documents/vllm-mvp-omni-spark/dgx-spark-vllm-qwen3-omni/vllm-install"
+TIMEOUT=600  # 10 minutes
+
+# ============================================================
+# CONFIGURATION DES CHEMINS — modifier uniquement ici
+# ============================================================
+export VLLM_INSTALL_DIR="$INSTALL_DIR"
+export VLLM_MODEL_PATH="/home/hci-ai/Documents/models/models/Qwen3-Omni-30B-A3B-Instruct/"
+# ============================================================
 
 # Sélection du serveur et log selon le mode
 if [ "$MODE" = "multimodal" ]; then
